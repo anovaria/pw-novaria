@@ -1,4 +1,4 @@
-package com.airhacks;
+package it.tss.projectwork;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
