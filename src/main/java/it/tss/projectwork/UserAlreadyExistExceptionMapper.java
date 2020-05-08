@@ -5,6 +5,7 @@
  */
 package it.tss.projectwork;
 
+import it.tss.projectwork.users.UserAlreadyExistException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
@@ -14,13 +15,13 @@ import javax.ws.rs.ext.Provider;
  * @author alfonso
  */
 @Provider
-public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalArgumentException> {
+public class UserAlreadyExistExceptionMapper implements ExceptionMapper<UserAlreadyExistException> {
 
     @Override
-    public Response toResponse(IllegalArgumentException ex) {
+    public Response toResponse(UserAlreadyExistException ex) {
         return Response
                 .status(Response.Status.BAD_REQUEST)
-                .header("reason", ex.getMessage())
+                .header("reason", "username " + ex.getUsername() + " already exist...")
                 .build();
     }
 

@@ -61,7 +61,7 @@ public class DbConfigurator {
         jdbcBaseUrl = "jdbc:mariadb://" + MARIADB_HOST + ":" + MARIADB_PORT + "/";
         checkCreateDb();
         checkDasource();
-        //migrate();
+        migrate();
         System.out.println("----------------------- End DbConfiguration-----------------------");
     }
 
@@ -72,9 +72,7 @@ public class DbConfigurator {
             Logger.getLogger(DbConfigurator.class.getName()).log(Level.SEVERE, null, ex);
         }
         try ( Connection conn = DriverManager.getConnection(jdbcBaseUrl, "root", MARIADB_ROOT_PWD)) {
-            // create a Statement
             try ( Statement stmt = conn.createStatement()) {
-                //execute query
                 try ( ResultSet rs = stmt.executeQuery("SELECT SCHEMA_NAME"
                         + "  FROM INFORMATION_SCHEMA.SCHEMATA"
                         + " WHERE SCHEMA_NAME = '" + MARIADB_DATABASE_NAME + "'")) {

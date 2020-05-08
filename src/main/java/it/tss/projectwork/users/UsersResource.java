@@ -21,7 +21,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -56,14 +55,7 @@ public class UsersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(User u) {
-        if (u.getId() == null) {
-            return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .header("caused-by", "id mancante")
-                    .build();
-        }
-
-        User saved = store.create(u);      
+        User saved = store.create(u);
         return Response
                 .status(Response.Status.CREATED)
                 .entity(saved)
@@ -74,19 +66,12 @@ public class UsersResource {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(
-            @FormParam("id") Long id,
             @FormParam("firstName") String fname,
             @FormParam("lastName") String lname,
             @FormParam("usr") String usr,
             @FormParam("pwd") String pwd) {
 
-        if (id == null) {
-            throw new BadRequestException();
-        }
-
-        User user = new User(id, usr, pwd);
-        user.setFirstName(fname);
-        user.setLastName(lname);
+        User user = new User(fname, lname, usr, pwd);
         User saved = store.create(user);
         return Response
                 .status(Response.Status.CREATED)
@@ -100,7 +85,7 @@ public class UsersResource {
     @Produces(MediaType.APPLICATION_JSON)
     public User update(@PathParam("id") Long id, User u) {
         if (u.getId() == null || !u.getId().equals(id)) {
-            throw new IllegalArgumentException("risorsa con id non valido");
+            throw new BadRequestException();
         }
         return store.update(u);
     }
@@ -119,7 +104,7 @@ public class UsersResource {
     public Response delete(@PathParam("id") Long id) {
         User found = store.find(id);
         if (found == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
+            throw new NotFoundException();
         }
         store.delete(id);
         return Response.status(Response.Status.NO_CONTENT).build();
