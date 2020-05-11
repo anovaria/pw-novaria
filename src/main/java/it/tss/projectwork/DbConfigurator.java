@@ -6,12 +6,7 @@
 package it.tss.projectwork;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.annotation.sql.DataSourceDefinition;
@@ -43,7 +38,6 @@ public class DbConfigurator {
     public static final String MARIADB_HOST = "localhost";
     public static final int MARIADB_PORT = 3306;
     public static final String MARIADB_PROTOCOL = "tcp";
-    public static final String MARIADB_ROOT_PWD = "root";
     public static final String MARIADB_USR = "pwapp";
     public static final String MARIADB_USER_PWD = "pwapp";
     public static final String MARIADB_DATABASE_NAME = "projectwork";
@@ -59,35 +53,9 @@ public class DbConfigurator {
     public void init() {
         System.out.println("----------------------- Init DbConfiguration-----------------------");
         jdbcBaseUrl = "jdbc:mariadb://" + MARIADB_HOST + ":" + MARIADB_PORT + "/";
-        checkCreateDb();
         checkDasource();
         migrate();
         System.out.println("----------------------- End DbConfiguration-----------------------");
-    }
-
-    public void checkCreateDb() {
-        try {
-            Class.forName("org.mariadb.jdbc.Driver");
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DbConfigurator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try ( Connection conn = DriverManager.getConnection(jdbcBaseUrl, "root", MARIADB_ROOT_PWD)) {
-            try ( Statement stmt = conn.createStatement()) {
-                try ( ResultSet rs = stmt.executeQuery("SELECT SCHEMA_NAME"
-                        + "  FROM INFORMATION_SCHEMA.SCHEMATA"
-                        + " WHERE SCHEMA_NAME = '" + MARIADB_DATABASE_NAME + "'")) {
-                    if (rs.next()) {
-                        System.out.println("---------------- check database ok -------------------");
-                        return;
-                    }
-                    stmt.executeUpdate("create database projectwork character set UTF8");
-                    stmt.executeUpdate("grant all on projectwork.* to 'pwapp'@'%' identified by 'pwapp'");
-                    System.out.println("---------------- database created -------------------");
-                }
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(DbConfigurator.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     private void checkDasource() {
