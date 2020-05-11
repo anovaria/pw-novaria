@@ -21,10 +21,11 @@ import javax.persistence.Version;
  * @author alfonso
  */
 @MappedSuperclass
-public class AbstractEntity implements Serializable {
+public abstract class AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     protected Long id;
 
     @Column(name = "created_on")
