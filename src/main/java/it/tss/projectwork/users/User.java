@@ -9,7 +9,6 @@ import it.tss.projectwork.AbstractEntity;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import javax.json.bind.annotation.JsonbDateFormat;
 import javax.persistence.Column;
 import javax.persistence.Entity;
